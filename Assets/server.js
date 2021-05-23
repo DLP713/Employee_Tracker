@@ -1,5 +1,6 @@
 require('dotenv').config()
-var inquirer = require('inquirer');
+const inquirer = require('inquirer');
+const cTable = require('console.table');
 const { clearLine } = require('inquirer/lib/utils/readline');
 
 var mysql = require('mysql');
@@ -19,48 +20,168 @@ connection.connect(function (err) {
     console.log('connected as id ' + connection.threadId);
 });
 
-askForAdd();
-
-function askForAdd() {
-    return inquirer
-        .prompt([
+// Run app
+function startApp() {
+    inquirer.prompt([
         {
-            /* Pass your questions in here */
-            type: "list",
-            name: "add_question",
-            message: "Which of the following would you like to create?",
-            choices: ["Department", "Role", "Employee"]
+            type: 'list',
+            message: 'What would you like to do?',
+            name: 'options',
+            choices: [
+                'View',
+                'Add',
+                'Update',
+                'Delete'
+            ]
         }
-        ])
-        .then(answers => {
-            // Use user feedback for... whatever!!
-            if(answers.add_question === "Department"){
+    ]).then((val) => {
+        switch (val.options) {
+            case 'View':
+                viewOptions();
+            break;
+
+            case 'Add':
+                addOptions();
+            break;
+
+            case 'Update':
+                updateOptions();
+            break;
+
+            case 'Delete':
+                deleteOptions();
+            break;
+        }
+    })
+};
+
+// view options
+function viewOptions() {
+    inquirer.prompt ([
+        {
+            type: 'list',
+            message: 'Select an option:',
+            name: 'options',
+            choices: [
+                'View departments',
+                'View roles',
+                'View employees',
+                'View employees by manager',
+                'View the total utilized budget of a department'
+            ]
+        }
+    ]).then((val) => {
+        switch (val.options) {
+            case 'View departments':
+                viewDepartments();
+            break;
+
+            case 'View roles':
+                viewRoles();
+            break;
+
+            case 'View employees':
+                viewEmployees();
+            break;
+
+            case 'View employees by manager':
+                viewEmployeebyManager();
+            break;
+
+            case 'View the total utilized budget of a department':
+                viewBudget();
+            break;
+        }
+    })
+};
+
+// add options
+function addOptions() {
+    inquirer.prompt ([
+        {
+            type: 'list',
+            message: 'Select an option:',
+            name: 'options',
+            choices: [
+                'Add department',
+                'Add role',
+                'Add employee',
+            ]
+        }
+    ]).then((val) => {
+        switch (val.options) {
+            case 'Add department':
                 addDepartment();
-            } 
+            break;
 
-        })
-        .catch(error => {
-            if (error.isTtyError) {
-                // Prompt couldn't be rendered in the current environment
-            } else {
-                // Something else went wrong
-            }
-        });
-}
+            case 'Add role':
+                addRole();
+            break;
 
-function addDepartment() {
-    return inquirer 
-        .prompt([
-            {
-                type: "input",
-                name: "which_department",
-                message: "What would you like to name the department?",
-            }
-        ])
-        .then(answers => {
-            const department = {name: answers.which_department};
-            connection.query('INSERT INTO department SET ?', department, function(error, results, fields){
-                console.log(results);
-            })
-        })
+            case 'Add employee':
+                addEmployee();
+            break;
+        }
+    })
+};
+
+// update functions
+function updateOptions() {
+    inquirer.prompt([
+        {
+            type: 'list',
+            message: 'Select an option:',
+            name: 'options',
+            choices: [
+                'Update employee roles',
+                'Update employee managers',
+            ]
+        }
+    ]).then((val) => {
+        switch (val.options) {
+            case 'Update employee roles':
+                updateEmployeeRoles();
+            break;
+
+            case 'Update employee managers':
+                upddateEmployeeManagers();
+            break;
+        }
+    })
+};
+
+// delete options
+function deleteOptions() {
+    inquirer.prompt([
+        {
+            type: 'list',
+            message: 'Select an option:',
+            name: 'options',
+            choices: [
+                'Delete departments',
+                'Delete roles',
+                'Delete employees'
+            ]
+        }
+    ]).then((val) => {
+        switch (val.options) {
+            case 'Delete departments':
+                deleteDepartment();
+            break;
+
+            case 'Delete roles':
+                deleteRoles();
+            break;
+
+            case 'Delete employees':
+                deleteEmployees();
+            break;
+        }
+    })
+};
+
+// begin user functions
+// view departments
+function viewEmployees () {
+    
 };
